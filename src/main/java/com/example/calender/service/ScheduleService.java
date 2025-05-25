@@ -47,7 +47,7 @@ public class ScheduleService {
     }
 
     @Transactional
-    public void deleteSchedule(Long id) {
+    public void deleteSchedule(Long id, String password) {
         scheduleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("일정을 찾을 수 없습니다. ID: " + id));
 

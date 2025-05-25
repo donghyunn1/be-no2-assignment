@@ -67,7 +67,7 @@ public class ScheduleController {
     public ResponseEntity<Void> deleteSchedule(
             @PathVariable Long id,
             @RequestBody ScheduleDeleteRequestDto requestDto) {
-        scheduleService.deleteSchedule(id);
+        scheduleService.deleteSchedule(id, requestDto.getPassword());
         return ResponseEntity.noContent().build();
     }
 }
