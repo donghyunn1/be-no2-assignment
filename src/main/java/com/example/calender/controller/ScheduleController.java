@@ -34,13 +34,13 @@ public class ScheduleController {
     @GetMapping
     public ResponseEntity<List<ScheduleResponseDto>> getSchedules(
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate updatedDate,
-            @RequestParam(required = false) String author) {
+            @RequestParam(required = false) Long authorId) {
 
         List<ScheduleResponseDto> schedules;
-        if (updatedDate == null && author == null) {
+        if (updatedDate == null && authorId == null) {
             schedules = scheduleService.getAllSchedules();
         } else {
-            schedules = scheduleService.getSchedulesByFilters(updatedDate, author);
+            schedules = scheduleService.getSchedulesByFilters(updatedDate, authorId);
         }
 
         return ResponseEntity.ok(schedules);

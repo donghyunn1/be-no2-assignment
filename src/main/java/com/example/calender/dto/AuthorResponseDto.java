@@ -1,6 +1,5 @@
 package com.example.calender.dto;
 
-import com.example.calender.entity.Schedule;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,14 +7,13 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
-public class ScheduleResponseDto {
+@NoArgsConstructor
+public class AuthorResponseDto {
 
     private Long id;
-    private String todo;
-    private Long authorId;
+    private String name;
+    private String email;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
 }

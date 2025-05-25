@@ -7,9 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ScheduleUpdateRequestDto {
+public class AuthorRequestDto {
 
-    private String todo;
-    private Long authorId;
-    private String password;
+    private String name;
+    private String email;
 }

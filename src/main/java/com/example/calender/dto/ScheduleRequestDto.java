@@ -10,6 +10,6 @@ import lombok.Setter;
 public class ScheduleRequestDto {
 
     private String todo;
-    private String author;
+    private Long authorId;
     private String password;
 }

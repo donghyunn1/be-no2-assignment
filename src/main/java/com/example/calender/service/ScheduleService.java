@@ -3,6 +3,7 @@ package com.example.calender.service;
 import com.example.calender.dto.ScheduleRequestDto;
 import com.example.calender.dto.ScheduleResponseDto;
 import com.example.calender.dto.ScheduleUpdateRequestDto;
+import com.example.calender.repository.AuthorRepository;
 import com.example.calender.repository.ScheduleRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,9 +16,11 @@ import java.util.List;
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
+    private final AuthorRepository authorRepository;
 
-    public ScheduleService(ScheduleRepository scheduleRepository) {
+    public ScheduleService(ScheduleRepository scheduleRepository, AuthorRepository authorRepository) {
         this.scheduleRepository = scheduleRepository;
+        this.authorRepository = authorRepository;
     }
 
     @Transactional
@@ -29,8 +32,13 @@ public class ScheduleService {
         return scheduleRepository.findAll();
     }
 
-    public List<ScheduleResponseDto> getSchedulesByFilters(LocalDate updatedDate, String author) {
-        return scheduleRepository.findByFilters(updatedDate, author);
+    public List<ScheduleResponseDto> getSchedulesByFilters(LocalDate updatedDate, Long authorId) {
+        if (authorId != null) {
+            authorRepository.findById(authorId)
+                    .orElseThrow(() -> new RuntimeException("존재하지 않는 작성자입니다. ID: " + authorId));
+        }
+
+        return scheduleRepository.findByFilters(updatedDate, authorId);
     }
 
     public ScheduleResponseDto getSchedule(Long id) {

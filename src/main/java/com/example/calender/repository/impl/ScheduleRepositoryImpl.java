@@ -32,7 +32,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
             new ScheduleResponseDto(
                     rs.getLong("id"),
                     rs.getString("todo"),
-                    rs.getString("author"),
+                    rs.getLong("author_id"),
                     rs.getTimestamp("created_at").toLocalDateTime(),
                     rs.getTimestamp("updated_at").toLocalDateTime()
             );
@@ -47,7 +47,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, scheduleRequestDto.getTodo());
-            ps.setString(2, scheduleRequestDto.getAuthor());
+            ps.setLong(2, scheduleRequestDto.getAuthorId());
             ps.setString(3, scheduleRequestDto.getPassword());
             ps.setTimestamp(4, Timestamp.valueOf(now));
             ps.setTimestamp(5, Timestamp.valueOf(now));
@@ -65,21 +65,27 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     }
 
     @Override
-    public List<ScheduleResponseDto> findByFilters(LocalDate updatedDate, String author) {
-        StringBuilder sql = new StringBuilder("SELECT id, todo, author, created_at, updated_at FROM schedule WHERE 1=1");
+    public List<ScheduleResponseDto> findByFilters(LocalDate updatedDate, Long authorId) {
+        StringBuilder sql = new StringBuilder("""
+                SELECT s.id, s.todo, s.author_id, a.name as author_name, a.email as author_email, 
+                       s.created_at, s.updated_at 
+                FROM schedule s 
+                JOIN author a ON s.author_id = a.id 
+                WHERE 1=1
+                """);
         List<Object> params = new ArrayList<>();
 
         if (updatedDate != null) {
-            sql.append(" AND DATE(updated_at) = ?");
+            sql.append(" AND DATE(s.updated_at) = ?");
             params.add(updatedDate);
         }
 
-        if (author != null && !author.trim().isEmpty()) {
-            sql.append(" AND author = ?");
-            params.add(author);
+        if (authorId != null) {
+            sql.append(" AND s.author_id = ?");
+            params.add(authorId);
         }
 
-        sql.append(" ORDER BY updated_at DESC");
+        sql.append(" ORDER BY s.updated_at DESC");
 
         return jdbcTemplate.query(sql.toString(), params.toArray(), scheduleDtoRowMapper);
     }
@@ -98,7 +104,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 
         jdbcTemplate.update(sql,
                 updateRequestDto.getTodo(),
-                updateRequestDto.getAuthor(),
+                updateRequestDto.getAuthorId(),
                 Timestamp.valueOf(LocalDateTime.now()),
                 id
         );

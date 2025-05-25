@@ -12,7 +12,7 @@ public interface ScheduleRepository {
 
     ScheduleResponseDto save(ScheduleRequestDto scheduleRequestDto);
     List<ScheduleResponseDto> findAll();
-    List<ScheduleResponseDto> findByFilters(LocalDate updatedDate, String author);
+    List<ScheduleResponseDto> findByFilters(LocalDate updatedDate, Long authorId);
     Optional<ScheduleResponseDto> findById(Long id);
     ScheduleResponseDto update(Long id, ScheduleUpdateRequestDto updateRequestDto);
     void deleteById(Long id);
